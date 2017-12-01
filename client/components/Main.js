@@ -12,6 +12,7 @@ export default class Main extends Component {
         <Sidebar />
         <Navbar />
         <main>
+          /* what is the switch? */
           <Switch>
             <Route path="/channels/:channelId" component={MessagesList} />
             <Redirect to="/channels/1" />
