@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import store, { newMessageFromUser } from '../store';
+import store, { newMessageFromUser, gotNewMessageFromServer, postMessage } from '../store';
 
 export default class NewMessageEntry extends Component {
   constructor() {
     super();
     this.state = store.getState();
+    this.submitHandler = this.submitHandler.bind(this);
   }
 
   componentDidMount () {
@@ -18,10 +19,23 @@ export default class NewMessageEntry extends Component {
     const action = newMessageFromUser(value);
     store.dispatch(action);
   }
+
+  submitHandler (evt) {
+    evt.preventDefault();
+    const channelId = this.props.channelId;
+    const content = this.state.newMessageEntry;
+    const name = this.state.name;
+    let message = {
+      content: content, channelId: channelId, name: name
+    }
+    let thunk = postMessage(message);
+    store.dispatch(thunk)
+  }
+
   render () {
-    console.log(this.state.newMessageEntry);
+
     return (
-      <form id="new-message-form">
+      <form id="new-message-form" onSubmit={this.submitHandler} >
         <div className="input-group input-group-lg">
           <input
             className="form-control"
@@ -32,7 +46,7 @@ export default class NewMessageEntry extends Component {
             onChange={this.changeHandler}
           />
           <span className="input-group-btn">
-            <button className="btn btn-default" type="submit">Chat!</button>
+            <button className="btn btn-default" type="submit" >Chat!</button>
           </span>
         </div>
       </form>
